@@ -20,7 +20,8 @@ public partial class dashboardAdmin : System.Web.UI.Page
             return;
         }
 
-        if (Session["is_admin"] == null || !(bool)Session["is_admin"])
+        bool podeDashboard = (Session["pode_dashboard"] != null && (bool)Session["pode_dashboard"]);
+        if (!podeDashboard)
         {
             Response.Redirect("home.aspx");
             return;
@@ -31,6 +32,8 @@ public partial class dashboardAdmin : System.Web.UI.Page
             CarregarResumo();
             CarregarProtetoresDropdown();
             CarregarProtetoresLista();
+            CarregarAdocoes();
+            CarregarAdocoesFeitas();
             CarregarInscricoes();
         }
     }
@@ -39,14 +42,20 @@ public partial class dashboardAdmin : System.Web.UI.Page
     {
         pnlAnimal.Visible = (aba == "ANIMAL");
         pnlProtetor.Visible = (aba == "PROTETOR");
+        pnlAdocoes.Visible = (aba == "ADOCOES");
+        pnlAdocoesFeitas.Visible = (aba == "ADOCOES_FEITAS");
         pnlInscricoes.Visible = (aba == "INSCRICOES");
 
         btnMenuAnimal.CssClass = (aba == "ANIMAL") ? "btn-menu-admin ativo" : "btn-menu-admin";
         btnMenuProtetor.CssClass = (aba == "PROTETOR") ? "btn-menu-admin ativo" : "btn-menu-admin";
+        btnMenuAdocoes.CssClass = (aba == "ADOCOES") ? "btn-menu-admin ativo" : "btn-menu-admin";
+        btnMenuAdocoesFeitas.CssClass = (aba == "ADOCOES_FEITAS") ? "btn-menu-admin ativo" : "btn-menu-admin";
         btnMenuInscricoes.CssClass = (aba == "INSCRICOES") ? "btn-menu-admin ativo" : "btn-menu-admin";
 
         if (aba == "ANIMAL") CarregarProtetoresDropdown();
         if (aba == "PROTETOR") CarregarProtetoresLista();
+        if (aba == "ADOCOES") CarregarAdocoes();
+        if (aba == "ADOCOES_FEITAS") CarregarAdocoesFeitas();
         if (aba == "INSCRICOES") CarregarInscricoes();
     }
 
@@ -58,6 +67,16 @@ public partial class dashboardAdmin : System.Web.UI.Page
     protected void btnMenuProtetor_Click(object sender, EventArgs e)
     {
         AlternarAba("PROTETOR");
+    }
+
+    protected void btnMenuAdocoes_Click(object sender, EventArgs e)
+    {
+        AlternarAba("ADOCOES");
+    }
+
+    protected void btnMenuAdocoesFeitas_Click(object sender, EventArgs e)
+    {
+        AlternarAba("ADOCOES_FEITAS");
     }
 
     protected void btnMenuInscricoes_Click(object sender, EventArgs e)
@@ -83,7 +102,7 @@ public partial class dashboardAdmin : System.Web.UI.Page
             using (SqlCommand cmd = new SqlCommand(sqlProt, con))
                 litTotalProtetores.Text = cmd.ExecuteScalar().ToString();
 
-            using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM tb_inscricao_protetor_voluntario WHERE status_analise = 'EM_ANALISE'", con))
+            using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM tb_solicitacao_adocao WHERE status_solicitacao IN ('PENDENTE', 'EM_ANALISE')", con))
                 litTotalInscricoes.Text = cmd.ExecuteScalar().ToString();
         }
     }
@@ -361,7 +380,152 @@ public partial class dashboardAdmin : System.Web.UI.Page
     }
 
     // =========================================================
-    // ABA 3: VISUALIZAR E APROVAR / REJEITAR INSCRIÇÕES
+    // ABA 3: PEDIDOS DE ADOÇÃO (APROVAR -> tb_adocao)
+    // =========================================================
+    private void CarregarAdocoes()
+    {
+        string sql = @"SELECT s.id_solicitacao, s.id_animal, s.status_solicitacao, s.data_solicitacao,
+                              a.nome AS nome_animal, a.especie, a.porte, ISNULL(a.raca, 'SRD') AS raca,
+                              u.nome AS nome_adotante, u.cpf, ISNULL(u.telefone, 'Não informado') AS telefone, u.email,
+                              ISNULL(f.motivo_adocao, 'Sem observações') AS motivo_adocao
+                       FROM tb_solicitacao_adocao s
+                       INNER JOIN tb_animal a ON s.id_animal = a.id_animal
+                       INNER JOIN tb_usuario u ON s.id_adotante = u.id_usuario
+                       LEFT JOIN tb_formulario_adocao f ON s.id_formulario = f.id_formulario
+                       ORDER BY CASE WHEN s.status_solicitacao IN ('PENDENTE', 'EM_ANALISE') THEN 0 ELSE 1 END, s.data_solicitacao DESC";
+
+        using (SqlConnection con = new SqlConnection(strConexao))
+        {
+            using (SqlDataAdapter da = new SqlDataAdapter(sql, con))
+            {
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+
+                rptAdocoes.DataSource = dt;
+                rptAdocoes.DataBind();
+                lblSemAdocoes.Visible = (dt.Rows.Count == 0);
+            }
+        }
+    }
+
+    protected void rptAdocoes_ItemCommand(object source, RepeaterCommandEventArgs e)
+    {
+        string[] dados = e.CommandArgument.ToString().Split('|');
+        int idSolicitacao = Convert.ToInt32(dados[0]);
+        int idAnimal = Convert.ToInt32(dados[1]);
+
+        try
+        {
+            using (SqlConnection con = new SqlConnection(strConexao))
+            {
+                con.Open();
+
+                if (e.CommandName == "EmContato")
+                {
+                    using (SqlCommand cmd = new SqlCommand("UPDATE tb_solicitacao_adocao SET status_solicitacao = 'EM_ANALISE' WHERE id_solicitacao = @id", con))
+                    {
+                        cmd.Parameters.AddWithValue("@id", idSolicitacao);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    lblMsgAdocao.Style["color"] = "#D4883E";
+                    lblMsgAdocao.Text = "Status atualizado para Em Contato / Em Análise.";
+                    lblMsgAdocao.Visible = true;
+                }
+                else if (e.CommandName == "Aprovar")
+                {
+                    // 1. Marca a solicitação como APROVADA
+                    using (SqlCommand cmd = new SqlCommand("UPDATE tb_solicitacao_adocao SET status_solicitacao = 'APROVADA' WHERE id_solicitacao = @id", con))
+                    {
+                        cmd.Parameters.AddWithValue("@id", idSolicitacao);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    // 2. Grava na tb_adocao (colunas: id_solicitacao, data_adocao, termo_assinado)
+                    string sqlAdocao = @"IF NOT EXISTS (SELECT 1 FROM tb_adocao WHERE id_solicitacao = @id_sol)
+                                         INSERT INTO tb_adocao (id_solicitacao, data_adocao, termo_assinado)
+                                         VALUES (@id_sol, GETDATE(), 1)";
+                    using (SqlCommand cmd = new SqlCommand(sqlAdocao, con))
+                    {
+                        cmd.Parameters.AddWithValue("@id_sol", idSolicitacao);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    // 3. Muda o status do animal para ADOTADO
+                    using (SqlCommand cmd = new SqlCommand("UPDATE tb_animal SET status_animal = 'ADOTADO' WHERE id_animal = @id_animal", con))
+                    {
+                        cmd.Parameters.AddWithValue("@id_animal", idAnimal);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    // 4. Recusa outros pedidos abertos para o mesmo animal
+                    using (SqlCommand cmd = new SqlCommand("UPDATE tb_solicitacao_adocao SET status_solicitacao = 'RECUSADA' WHERE id_animal = @id_animal AND id_solicitacao <> @id_sol AND status_solicitacao IN ('PENDENTE', 'EM_ANALISE')", con))
+                    {
+                        cmd.Parameters.AddWithValue("@id_animal", idAnimal);
+                        cmd.Parameters.AddWithValue("@id_sol", idSolicitacao);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    lblMsgAdocao.Style["color"] = "#4E7A5B";
+                    lblMsgAdocao.Text = "Adoção aprovada e registrada com sucesso!";
+                    lblMsgAdocao.Visible = true;
+                }
+                else if (e.CommandName == "Recusar")
+                {
+                    using (SqlCommand cmd = new SqlCommand("UPDATE tb_solicitacao_adocao SET status_solicitacao = 'RECUSADA' WHERE id_solicitacao = @id", con))
+                    {
+                        cmd.Parameters.AddWithValue("@id", idSolicitacao);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    lblMsgAdocao.Style["color"] = "#C95A3B";
+                    lblMsgAdocao.Text = "Pedido de adoção recusado.";
+                    lblMsgAdocao.Visible = true;
+                }
+            }
+
+            CarregarAdocoes();
+            CarregarAdocoesFeitas();
+            CarregarResumo();
+        }
+        catch (SqlException ex)
+        {
+            lblMsgAdocao.Style["color"] = "#C95A3B";
+            lblMsgAdocao.Text = "Erro ao processar adoção: " + ex.Message;
+            lblMsgAdocao.Visible = true;
+        }
+    }
+
+    // =========================================================
+    // ABA 4: ADOÇÕES REALIZADAS (HISTÓRICO tb_adocao)
+    // =========================================================
+    private void CarregarAdocoesFeitas()
+    {
+        string sql = @"SELECT ad.id_adocao, ad.data_adocao, ISNULL(ad.termo_assinado, 0) AS termo_assinado,
+                              a.nome AS nome_animal, a.especie, a.porte, ISNULL(a.raca, 'SRD') AS raca,
+                              u.nome AS nome_adotante, u.cpf, ISNULL(u.telefone, 'Não informado') AS telefone, u.email
+                       FROM tb_adocao ad
+                       INNER JOIN tb_solicitacao_adocao s ON ad.id_solicitacao = s.id_solicitacao
+                       INNER JOIN tb_animal a ON s.id_animal = a.id_animal
+                       INNER JOIN tb_usuario u ON s.id_adotante = u.id_usuario
+                       ORDER BY ad.data_adocao DESC";
+
+        using (SqlConnection con = new SqlConnection(strConexao))
+        {
+            using (SqlDataAdapter da = new SqlDataAdapter(sql, con))
+            {
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+
+                rptAdocoesFeitas.DataSource = dt;
+                rptAdocoesFeitas.DataBind();
+                lblSemAdocoesFeitas.Visible = (dt.Rows.Count == 0);
+            }
+        }
+    }
+
+    // =========================================================
+    // ABA 5: SOLICITAÇÕES DE VOLUNTARIADO
     // =========================================================
     private void CarregarInscricoes()
     {

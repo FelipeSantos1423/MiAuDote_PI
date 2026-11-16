@@ -9,7 +9,12 @@ public partial class MasterPage : System.Web.UI.MasterPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        btnLogout.Visible = (Session["id_usuario"] != null);
+        bool estaLogado = (Session["id_usuario"] != null);
+        bool podeDashboard = (Session["pode_dashboard"] != null && (bool)Session["pode_dashboard"]);
+
+        btnLogout.Visible = estaLogado;
+        btnAdmin.Visible = estaLogado && podeDashboard;
+        lnkLogin.Visible = !estaLogado;
     }
 
     protected void btnLogout_Click(object sender, EventArgs e)
@@ -18,5 +23,10 @@ public partial class MasterPage : System.Web.UI.MasterPage
         Session.Abandon();
 
         Response.Redirect("login.aspx");
+    }
+
+    protected void btnAdmin_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("dashboardAdmin.aspx");
     }
 }

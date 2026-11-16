@@ -129,7 +129,7 @@
         color: #D6C7BC;
     }
 
-    .btn-logout {
+    .btn-header {
         background-color: transparent;
         color: #C95A3B;
         border: 1px solid #C95A3B;
@@ -139,9 +139,10 @@
         font-weight: 600;
         cursor: pointer;
         transition: background-color 0.2s, color 0.2s;
+        margin-right: 10px;
     }
 
-        .btn-logout:hover {
+        .btn-header:hover {
             background-color: #C95A3B;
             color: #FFFFFF;
         }
@@ -160,7 +161,10 @@
                 <a href="home.aspx#Ajudar">como ajudar</a>
                 <a href="home.aspx#FAQ">FAQ</a>
                 <a href="home.aspx#Contato">Contato</a>
-                <asp:Button ID="btnLogout" runat="server" Text="Sair" CssClass="btn-logout"
+                <a href="login.aspx" visible="true" id="lnkLogin" runat="server">Login</a>
+                <asp:Button ID="btnAdmin" runat="server" Text="Dashboard" CssClass="btn-header"
+                    Visible="false" CausesValidation="false" OnClick="btnAdmin_Click" />
+                <asp:Button ID="btnLogout" runat="server" Text="Sair" CssClass="btn-header"
                     Visible="false" CausesValidation="false" OnClick="btnLogout_Click" />
             </nav>
         </header>
@@ -183,7 +187,7 @@
                 <div class="footer-ong">
                     <h3>ONG</h3>
                     <a href="sobreNos.aspx">Sobre nós</a>
-                    <a href="animaiAdocao.aspx">Animais</a>
+                    <a href="animais.aspx">Animais</a>
                 </div>
 
                 <div class="footer-apoie">

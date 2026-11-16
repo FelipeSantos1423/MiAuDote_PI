@@ -200,7 +200,7 @@
             background-color: #b04c30;
         }
 
-        /* CARDS DE SOLICITAÇÃO DE INSCRIÇÃO */
+        /* CARDS DE SOLICITAÇÃO E PROTETORES */
         .solicitacao-card {
             background-color: #FAF7F2;
             border: 1px solid #E5D9CE;
@@ -278,6 +278,21 @@
             background-color: #3f644a;
         }
 
+        .btn-contato {
+            padding: 9px 18px;
+            background-color: #D4883E;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-contato:hover {
+            background-color: #b8722e;
+        }
+
         .btn-rejeitar {
             padding: 9px 18px;
             background-color: transparent;
@@ -311,6 +326,7 @@
         }
     </style>
 </asp:Content>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
     <div class="admin-layout">
         <!-- MENU LATERAL -->
@@ -323,6 +339,12 @@
             <asp:Button ID="btnMenuProtetor" runat="server" Text="Adicionar Protetor"
                 CssClass="btn-menu-admin" CausesValidation="false" OnClick="btnMenuProtetor_Click" />
 
+            <asp:Button ID="btnMenuAdocoes" runat="server" Text="Pedidos de Adoção"
+                CssClass="btn-menu-admin" CausesValidation="false" OnClick="btnMenuAdocoes_Click" />
+
+            <asp:Button ID="btnMenuAdocoesFeitas" runat="server" Text="Adoções Realizadas"
+                CssClass="btn-menu-admin" CausesValidation="false" OnClick="btnMenuAdocoesFeitas_Click" />
+
             <asp:Button ID="btnMenuInscricoes" runat="server" Text="Solicitações"
                 CssClass="btn-menu-admin" CausesValidation="false" OnClick="btnMenuInscricoes_Click" />
         </aside>
@@ -331,7 +353,7 @@
         <section class="admin-content">
             <div class="admin-header">
                 <h1>Gestão <span>MiAuDote</span></h1>
-                <p>Cadastre novos pets, gerencie protetores e aprove solicitações de voluntariado.</p>
+                <p>Cadastre novos pets, gerencie protetores e aprove pedidos de adoção e voluntariado.</p>
             </div>
 
             <!-- CARDS DE RESUMO -->
@@ -349,7 +371,7 @@
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">Inscrições Pendentes</div>
+                    <div class="stat-label">Adoções Pendentes</div>
                     <div class="stat-valor">
                         <asp:Literal ID="litTotalInscricoes" runat="server" Text="0" />
                     </div>
@@ -525,7 +547,83 @@
                     Text="Nenhum protetor cadastrado no momento."></asp:Label>
             </asp:Panel>
 
-            <!-- PAINEL 3: SOLICITAÇÕES DE INSCRIÇÃO -->
+            <!-- PAINEL 3: PEDIDOS DE ADOÇÃO -->
+            <asp:Panel ID="pnlAdocoes" runat="server" CssClass="painel-box" Visible="false">
+                <h2>Pedidos de <span>Adoção</span></h2>
+                <p class="sub">Analise os interessados, marque quando estiver em contato ou aprove para registrar a adoção.</p>
+
+                <asp:Label ID="lblMsgAdocao" runat="server" Visible="false"
+                    Style="display: block; margin-bottom: 14px; font-weight: bold;"></asp:Label>
+
+                <asp:Repeater ID="rptAdocoes" runat="server" OnItemCommand="rptAdocoes_ItemCommand">
+                    <ItemTemplate>
+                        <div class="solicitacao-card">
+                            <div class="solicitacao-info">
+                                <h4>Pet: <%# Eval("nome_animal") %> (<%# Eval("especie") %> • <%# Eval("porte") %>)</h4>
+                                <p class="solicitacao-meta">
+                                    <strong>Interessado:</strong> <%# Eval("nome_adotante") %> • CPF: <%# Eval("cpf") %> • Tel: <%# Eval("telefone") %> • <%# Eval("email") %>
+                                </p>
+
+                                <div class="solicitacao-tags">
+                                    <span class="badge-info">Raça: <%# Eval("raca") %></span>
+                                    <span class="badge-info">Pedido em: <%# Eval("data_solicitacao", "{0:dd/MM/yyyy}") %></span>
+                                    <span class="badge-status"><%# Eval("status_solicitacao") %></span>
+                                </div>
+
+                                <p class="solicitacao-motivo"><strong>Observação:</strong> <%# Eval("motivo_adocao") %></p>
+                            </div>
+
+                            <div class="solicitacao-acoes" runat="server" visible='<%# Eval("status_solicitacao").ToString() == "PENDENTE" || Eval("status_solicitacao").ToString() == "EM_ANALISE" %>'>
+                                <asp:Button ID="btnEmContato" runat="server" Text="Em Contato" CssClass="btn-contato"
+                                    Visible='<%# Eval("status_solicitacao").ToString() == "PENDENTE" %>'
+                                    CommandName="EmContato"
+                                    CommandArgument='<%# Eval("id_solicitacao") + "|" + Eval("id_animal") %>' />
+
+                                <asp:Button ID="btnAprovarAdocao" runat="server" Text="Aprovar" CssClass="btn-aprovar"
+                                    CommandName="Aprovar"
+                                    CommandArgument='<%# Eval("id_solicitacao") + "|" + Eval("id_animal") %>' />
+
+                                <asp:Button ID="btnRecusarAdocao" runat="server" Text="Recusar" CssClass="btn-rejeitar"
+                                    CommandName="Recusar"
+                                    CommandArgument='<%# Eval("id_solicitacao") + "|" + Eval("id_animal") %>' />
+                            </div>
+                        </div>
+                    </ItemTemplate>
+                </asp:Repeater>
+
+                <asp:Label ID="lblSemAdocoes" runat="server" Visible="false" ForeColor="#7A6558"
+                    Text="Nenhuma solicitação de adoção registrada no momento."></asp:Label>
+            </asp:Panel>
+
+            <!-- PAINEL 4: ADOÇÕES REALIZADAS -->
+            <asp:Panel ID="pnlAdocoesFeitas" runat="server" CssClass="painel-box" Visible="false">
+                <h2>Adoções <span>Realizadas</span></h2>
+                <p class="sub">Histórico oficial de pets que já encontraram um novo lar.</p>
+
+                <asp:Repeater ID="rptAdocoesFeitas" runat="server">
+                    <ItemTemplate>
+                        <div class="solicitacao-card">
+                            <div class="solicitacao-info">
+                                <h4>Pet: <%# Eval("nome_animal") %> (<%# Eval("especie") %> • <%# Eval("porte") %>)</h4>
+                                <p class="solicitacao-meta">
+                                    <strong>Adotante:</strong> <%# Eval("nome_adotante") %> • CPF: <%# Eval("cpf") %> • Tel: <%# Eval("telefone") %> • <%# Eval("email") %>
+                                </p>
+
+                                <div class="solicitacao-tags">
+                                    <span class="badge-info">Raça: <%# Eval("raca") %></span>
+                                    <span class="badge-info">Adotado em: <%# Eval("data_adocao", "{0:dd/MM/yyyy}") %></span>
+                                    <span class="badge-status"><%# Convert.ToBoolean(Eval("termo_assinado")) ? "Termo Assinado" : "Termo Pendente" %></span>
+                                </div>
+                            </div>
+                        </div>
+                    </ItemTemplate>
+                </asp:Repeater>
+
+                <asp:Label ID="lblSemAdocoesFeitas" runat="server" Visible="false" ForeColor="#7A6558"
+                    Text="Nenhuma adoção foi concluída ainda."></asp:Label>
+            </asp:Panel>
+
+            <!-- PAINEL 5: SOLICITAÇÕES DE INSCRIÇÃO (VOLUNTÁRIOS) -->
             <asp:Panel ID="pnlInscricoes" runat="server" CssClass="painel-box" Visible="false">
                 <h2>Solicitações de <span>Inscrição</span></h2>
                 <p class="sub">Analise os candidatos a voluntário e aprove ou rejeite cada pedido.</p>
@@ -564,4 +662,3 @@
         </section>
     </div>
 </asp:Content>
-

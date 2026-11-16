@@ -61,7 +61,7 @@ public partial class login : System.Web.UI.Page
             }
 
             // 2. Verifica na tb_usuario_cargo se esse usuário é ADMINISTRADOR
-            string sqlCargo = @"SELECT COUNT(*) 
+            string sqlAdmin = @"SELECT COUNT(*) 
                                 FROM tb_usuario_cargo uc
                                 INNER JOIN tb_cargo c ON uc.id_cargo = c.id_cargo
                                 WHERE uc.id_usuario = @id_usuario 
@@ -69,16 +69,32 @@ public partial class login : System.Web.UI.Page
                                   AND uc.status_aprovacao = 'ATIVO'";
 
             bool isAdmin = false;
-            using (SqlCommand cmdCargo = new SqlCommand(sqlCargo, con))
+            using (SqlCommand cmdCargo = new SqlCommand(sqlAdmin, con))
             {
                 cmdCargo.Parameters.AddWithValue("@id_usuario", idUsuario);
                 isAdmin = (Convert.ToInt32(cmdCargo.ExecuteScalar()) > 0);
+            }
+
+            // 2.1 Verifica se é ADMINISTRADOR ou PROTETOR para liberar o botão do dashboard
+            string sqlDash = @"SELECT COUNT(*) 
+                               FROM tb_usuario_cargo uc
+                               INNER JOIN tb_cargo c ON uc.id_cargo = c.id_cargo
+                               WHERE uc.id_usuario = @id_usuario 
+                                 AND c.nome_cargo IN ('ADMINISTRADOR', 'PROTETOR')
+                                 AND uc.status_aprovacao = 'ATIVO'";
+
+            bool podeDashboard = false;
+            using (SqlCommand cmdDash = new SqlCommand(sqlDash, con))
+            {
+                cmdDash.Parameters.AddWithValue("@id_usuario", idUsuario);
+                podeDashboard = (Convert.ToInt32(cmdDash.ExecuteScalar()) > 0);
             }
 
             // 3. Salva tudo na Session
             Session["id_usuario"] = idUsuario;
             Session["nome_usuario"] = nomeUsuario;
             Session["is_admin"] = isAdmin;
+            Session["pode_dashboard"] = podeDashboard;
 
             // 4. Manda para a página de origem (?retorno=...) ou direto para o painel certo
             string paginaRetorno = Request.QueryString["retorno"];

@@ -60,4 +60,9 @@ public partial class home : System.Web.UI.Page
     {
         Response.Redirect("animais.aspx");
     }
+
+    protected void btnContribuir_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("doacoes.aspx");
+    }
 }

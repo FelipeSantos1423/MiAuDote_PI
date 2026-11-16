@@ -3,12 +3,20 @@
   "WorkspaceRootPath": "D:\\Fatec_projects\\Web\\Miaudote_PI\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{AF9D486F-5896-697E-6211-D36AE2C63116}|D:\\Fatec_projects\\Web\\Miaudote_PI\\Miaudote_PI|d:\\fatec_projects\\web\\miaudote_pi\\miaudote_pi\\dashboardadmin.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AF9D486F-5896-697E-6211-D36AE2C63116}|D:\\Fatec_projects\\Web\\Miaudote_PI\\Miaudote_PI|solutionrelative:miaudote_pi\\dashboardadmin.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{AF9D486F-5896-697E-6211-D36AE2C63116}|D:\\Fatec_projects\\Web\\Miaudote_PI\\Miaudote_PI|d:\\fatec_projects\\web\\miaudote_pi\\miaudote_pi\\masterpage.master||{B30AFBFF-D992-43B7-B62D-2642580A2883}",
+      "RelativeMoniker": "D:0:0:{AF9D486F-5896-697E-6211-D36AE2C63116}|D:\\Fatec_projects\\Web\\Miaudote_PI\\Miaudote_PI|solutionrelative:miaudote_pi\\masterpage.master||{B30AFBFF-D992-43B7-B62D-2642580A2883}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{AF9D486F-5896-697E-6211-D36AE2C63116}|D:\\Fatec_projects\\Web\\Miaudote_PI\\Miaudote_PI|d:\\fatec_projects\\web\\miaudote_pi\\miaudote_pi\\dashboardadmin.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}",
-      "RelativeMoniker": "D:0:0:{AF9D486F-5896-697E-6211-D36AE2C63116}|D:\\Fatec_projects\\Web\\Miaudote_PI\\Miaudote_PI|solutionrelative:miaudote_pi\\dashboardadmin.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}"
+      "AbsoluteMoniker": "D:0:0:{AF9D486F-5896-697E-6211-D36AE2C63116}|D:\\Fatec_projects\\Web\\Miaudote_PI\\Miaudote_PI|d:\\fatec_projects\\web\\miaudote_pi\\miaudote_pi\\home.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}",
+      "RelativeMoniker": "D:0:0:{AF9D486F-5896-697E-6211-D36AE2C63116}|D:\\Fatec_projects\\Web\\Miaudote_PI\\Miaudote_PI|solutionrelative:miaudote_pi\\home.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AF9D486F-5896-697E-6211-D36AE2C63116}|D:\\Fatec_projects\\Web\\Miaudote_PI\\Miaudote_PI|d:\\fatec_projects\\web\\miaudote_pi\\miaudote_pi\\home.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AF9D486F-5896-697E-6211-D36AE2C63116}|D:\\Fatec_projects\\Web\\Miaudote_PI\\Miaudote_PI|solutionrelative:miaudote_pi\\home.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AF9D486F-5896-697E-6211-D36AE2C63116}|D:\\Fatec_projects\\Web\\Miaudote_PI\\Miaudote_PI|d:\\fatec_projects\\web\\miaudote_pi\\miaudote_pi\\doacoes.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}",
+      "RelativeMoniker": "D:0:0:{AF9D486F-5896-697E-6211-D36AE2C63116}|D:\\Fatec_projects\\Web\\Miaudote_PI\\Miaudote_PI|solutionrelative:miaudote_pi\\doacoes.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}"
     }
   ],
   "DocumentGroupContainers": [
@@ -23,27 +31,53 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "dashboardAdmin.aspx.cs",
-              "DocumentMoniker": "D:\\Fatec_projects\\Web\\Miaudote_PI\\Miaudote_PI\\dashboardAdmin.aspx.cs",
-              "RelativeDocumentMoniker": "Miaudote_PI\\dashboardAdmin.aspx.cs",
-              "ToolTip": "D:\\Fatec_projects\\Web\\Miaudote_PI\\Miaudote_PI\\dashboardAdmin.aspx.cs",
-              "RelativeToolTip": "Miaudote_PI\\dashboardAdmin.aspx.cs",
-              "ViewState": "AgIAAJIBAAAAAAAAAAAmwLEBAAABAAAAAAAAAA==",
+              "Title": "MasterPage.master",
+              "DocumentMoniker": "D:\\Fatec_projects\\Web\\Miaudote_PI\\Miaudote_PI\\MasterPage.master",
+              "RelativeDocumentMoniker": "Miaudote_PI\\MasterPage.master",
+              "ToolTip": "D:\\Fatec_projects\\Web\\Miaudote_PI\\Miaudote_PI\\MasterPage.master",
+              "RelativeToolTip": "Miaudote_PI\\MasterPage.master",
+              "LogicalView": "7651a703-06e5-11d1-8ebd-00a0c90f26ea",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000195|",
+              "WhenOpened": "2026-11-16T12:10:45.863Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "doacoes.aspx",
+              "DocumentMoniker": "D:\\Fatec_projects\\Web\\Miaudote_PI\\Miaudote_PI\\doacoes.aspx",
+              "RelativeDocumentMoniker": "Miaudote_PI\\doacoes.aspx",
+              "ToolTip": "D:\\Fatec_projects\\Web\\Miaudote_PI\\Miaudote_PI\\doacoes.aspx",
+              "RelativeToolTip": "Miaudote_PI\\doacoes.aspx",
+              "LogicalView": "7651a703-06e5-11d1-8ebd-00a0c90f26ea",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000195|",
+              "WhenOpened": "2026-11-16T11:59:33.426Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "home.aspx.cs",
+              "DocumentMoniker": "D:\\Fatec_projects\\Web\\Miaudote_PI\\Miaudote_PI\\home.aspx.cs",
+              "RelativeDocumentMoniker": "Miaudote_PI\\home.aspx.cs",
+              "ToolTip": "D:\\Fatec_projects\\Web\\Miaudote_PI\\Miaudote_PI\\home.aspx.cs",
+              "RelativeToolTip": "Miaudote_PI\\home.aspx.cs",
+              "ViewState": "AgIAAC8AAAAAAAAAAAAUwEEAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-11-15T04:59:48.693Z",
+              "WhenOpened": "2026-11-16T11:57:24.741Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "dashboardAdmin.aspx",
-              "DocumentMoniker": "D:\\Fatec_projects\\Web\\Miaudote_PI\\Miaudote_PI\\dashboardAdmin.aspx",
-              "RelativeDocumentMoniker": "Miaudote_PI\\dashboardAdmin.aspx",
-              "ToolTip": "D:\\Fatec_projects\\Web\\Miaudote_PI\\Miaudote_PI\\dashboardAdmin.aspx",
-              "RelativeToolTip": "Miaudote_PI\\dashboardAdmin.aspx",
+              "Title": "home.aspx",
+              "DocumentMoniker": "D:\\Fatec_projects\\Web\\Miaudote_PI\\Miaudote_PI\\home.aspx",
+              "RelativeDocumentMoniker": "Miaudote_PI\\home.aspx",
+              "ToolTip": "D:\\Fatec_projects\\Web\\Miaudote_PI\\Miaudote_PI\\home.aspx*",
+              "RelativeToolTip": "Miaudote_PI\\home.aspx*",
               "LogicalView": "7651a703-06e5-11d1-8ebd-00a0c90f26ea",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000195|",
-              "WhenOpened": "2026-11-15T04:59:06.459Z",
+              "WhenOpened": "2026-11-16T11:56:32.756Z",
               "EditorCaption": ""
             }
           ]
