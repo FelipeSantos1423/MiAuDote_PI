@@ -15,6 +15,7 @@ public partial class MasterPage : System.Web.UI.MasterPage
         btnLogout.Visible = estaLogado;
         btnAdmin.Visible = estaLogado && podeDashboard;
         lnkLogin.Visible = !estaLogado;
+        lnkMinhasSolicitacoes.Visible = estaLogado;
     }
 
     protected void btnLogout_Click(object sender, EventArgs e)
